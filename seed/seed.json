@@ -1,0 +1,1152 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "EdTech Estonia Solutions Directory",
+		"description": "Directory of edtech solutions by EdTech Estonia members and associate members",
+		"author": "EdTech Estonia"
+	},
+	"settings": {
+		"title": "EdTech Estonia Solutions",
+		"tagline": "Learning technology built in Estonia"
+	},
+	"collections": [
+		{
+			"slug": "solutions",
+			"label": "Solutions",
+			"labelSingular": "Solution",
+			"description": "EdTech Estonia members and associate members. One company = one solution.",
+			"icon": "lightbulb",
+			"urlPattern": "/solutions/{slug}",
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
+			"titleField": "title",
+			"admin": {
+				"listColumns": [
+					"title",
+					"membership",
+					"company_status",
+					"last_verified"
+				]
+			},
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Solution name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "tagline",
+					"label": "Tagline (one sentence, max 160 characters)",
+					"type": "string",
+					"required": true,
+					"searchable": true,
+					"validation": {
+						"maxLength": 160
+					}
+				},
+				{
+					"slug": "description",
+					"label": "Description (100–300 words)",
+					"type": "portableText",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "logo",
+					"label": "Logo (square SVG or PNG)",
+					"type": "image"
+				},
+				{
+					"slug": "website",
+					"label": "Website",
+					"type": "url",
+					"required": true
+				},
+				{
+					"slug": "founded_year",
+					"label": "Year founded",
+					"type": "integer",
+					"required": true,
+					"validation": {
+						"min": 1990,
+						"max": 2100
+					}
+				},
+				{
+					"slug": "hq_city",
+					"label": "HQ location",
+					"type": "select",
+					"required": true,
+					"validation": {
+						"options": [
+							"Tallinn",
+							"Tartu",
+							"Other in Estonia",
+							"Abroad"
+						]
+					}
+				},
+				{
+					"slug": "membership",
+					"label": "EdTech Estonia membership",
+					"type": "select",
+					"required": true,
+					"validation": {
+						"options": [
+							"Member",
+							"Associate member"
+						]
+					}
+				},
+				{
+					"slug": "product_languages",
+					"label": "Product languages",
+					"type": "multiSelect",
+					"required": true,
+					"validation": {
+						"options": [
+							"Estonian",
+							"English",
+							"Russian",
+							"Ukrainian",
+							"Latvian",
+							"Lithuanian",
+							"Finnish",
+							"German",
+							"Other"
+						]
+					}
+				},
+				{
+					"slug": "markets",
+					"label": "Countries where it's used",
+					"type": "multiSelect",
+					"required": true,
+					"validation": {
+						"options": [
+							"Afghanistan",
+							"Åland Islands",
+							"Albania",
+							"Algeria",
+							"American Samoa",
+							"Andorra",
+							"Angola",
+							"Anguilla",
+							"Antarctica",
+							"Antigua & Barbuda",
+							"Argentina",
+							"Armenia",
+							"Aruba",
+							"Australia",
+							"Austria",
+							"Azerbaijan",
+							"Bahamas",
+							"Bahrain",
+							"Bangladesh",
+							"Barbados",
+							"Belarus",
+							"Belgium",
+							"Belize",
+							"Benin",
+							"Bermuda",
+							"Bhutan",
+							"Bolivia",
+							"Bosnia & Herzegovina",
+							"Botswana",
+							"Bouvet Island",
+							"Brazil",
+							"British Indian Ocean Territory",
+							"British Virgin Islands",
+							"Brunei",
+							"Bulgaria",
+							"Burkina Faso",
+							"Burundi",
+							"Cambodia",
+							"Cameroon",
+							"Canada",
+							"Cape Verde",
+							"Caribbean Netherlands",
+							"Cayman Islands",
+							"Central African Republic",
+							"Chad",
+							"Chile",
+							"China",
+							"Christmas Island",
+							"Cocos (Keeling) Islands",
+							"Colombia",
+							"Comoros",
+							"Congo - Brazzaville",
+							"Congo - Kinshasa",
+							"Cook Islands",
+							"Costa Rica",
+							"Côte d’Ivoire",
+							"Croatia",
+							"Cuba",
+							"Curaçao",
+							"Cyprus",
+							"Czechia",
+							"Denmark",
+							"Djibouti",
+							"Dominica",
+							"Dominican Republic",
+							"Ecuador",
+							"Egypt",
+							"El Salvador",
+							"Equatorial Guinea",
+							"Eritrea",
+							"Estonia",
+							"Eswatini",
+							"Ethiopia",
+							"Falkland Islands",
+							"Faroe Islands",
+							"Fiji",
+							"Finland",
+							"France",
+							"French Guiana",
+							"French Polynesia",
+							"French Southern Territories",
+							"Gabon",
+							"Gambia",
+							"Georgia",
+							"Germany",
+							"Ghana",
+							"Gibraltar",
+							"Greece",
+							"Greenland",
+							"Grenada",
+							"Guadeloupe",
+							"Guam",
+							"Guatemala",
+							"Guernsey",
+							"Guinea",
+							"Guinea-Bissau",
+							"Guyana",
+							"Haiti",
+							"Heard & McDonald Islands",
+							"Honduras",
+							"Hong Kong SAR China",
+							"Hungary",
+							"Iceland",
+							"India",
+							"Indonesia",
+							"Iran",
+							"Iraq",
+							"Ireland",
+							"Isle of Man",
+							"Israel",
+							"Italy",
+							"Jamaica",
+							"Japan",
+							"Jersey",
+							"Jordan",
+							"Kazakhstan",
+							"Kenya",
+							"Kiribati",
+							"Kuwait",
+							"Kyrgyzstan",
+							"Laos",
+							"Latvia",
+							"Lebanon",
+							"Lesotho",
+							"Liberia",
+							"Libya",
+							"Liechtenstein",
+							"Lithuania",
+							"Luxembourg",
+							"Macao SAR China",
+							"Madagascar",
+							"Malawi",
+							"Malaysia",
+							"Maldives",
+							"Mali",
+							"Malta",
+							"Marshall Islands",
+							"Martinique",
+							"Mauritania",
+							"Mauritius",
+							"Mayotte",
+							"Mexico",
+							"Micronesia",
+							"Moldova",
+							"Monaco",
+							"Mongolia",
+							"Montenegro",
+							"Montserrat",
+							"Morocco",
+							"Mozambique",
+							"Myanmar (Burma)",
+							"Namibia",
+							"Nauru",
+							"Nepal",
+							"Netherlands",
+							"New Caledonia",
+							"New Zealand",
+							"Nicaragua",
+							"Niger",
+							"Nigeria",
+							"Niue",
+							"Norfolk Island",
+							"North Korea",
+							"North Macedonia",
+							"Northern Mariana Islands",
+							"Norway",
+							"Oman",
+							"Pakistan",
+							"Palau",
+							"Palestinian Territories",
+							"Panama",
+							"Papua New Guinea",
+							"Paraguay",
+							"Peru",
+							"Philippines",
+							"Pitcairn Islands",
+							"Poland",
+							"Portugal",
+							"Puerto Rico",
+							"Qatar",
+							"Réunion",
+							"Romania",
+							"Russia",
+							"Rwanda",
+							"Samoa",
+							"San Marino",
+							"São Tomé & Príncipe",
+							"Saudi Arabia",
+							"Senegal",
+							"Serbia",
+							"Seychelles",
+							"Sierra Leone",
+							"Singapore",
+							"Sint Maarten",
+							"Slovakia",
+							"Slovenia",
+							"Solomon Islands",
+							"Somalia",
+							"South Africa",
+							"South Georgia & South Sandwich Islands",
+							"South Korea",
+							"South Sudan",
+							"Spain",
+							"Sri Lanka",
+							"St. Barthélemy",
+							"St. Helena",
+							"St. Kitts & Nevis",
+							"St. Lucia",
+							"St. Martin",
+							"St. Pierre & Miquelon",
+							"St. Vincent & Grenadines",
+							"Sudan",
+							"Suriname",
+							"Svalbard & Jan Mayen",
+							"Sweden",
+							"Switzerland",
+							"Syria",
+							"Taiwan",
+							"Tajikistan",
+							"Tanzania",
+							"Thailand",
+							"Timor-Leste",
+							"Togo",
+							"Tokelau",
+							"Tonga",
+							"Trinidad & Tobago",
+							"Tunisia",
+							"Türkiye",
+							"Turkmenistan",
+							"Turks & Caicos Islands",
+							"Tuvalu",
+							"U.S. Outlying Islands",
+							"U.S. Virgin Islands",
+							"Uganda",
+							"Ukraine",
+							"United Arab Emirates",
+							"United Kingdom",
+							"United States",
+							"Uruguay",
+							"Uzbekistan",
+							"Vanuatu",
+							"Vatican City",
+							"Venezuela",
+							"Vietnam",
+							"Wallis & Futuna",
+							"Western Sahara",
+							"Yemen",
+							"Zambia",
+							"Zimbabwe"
+						]
+					}
+				},
+				{
+					"slug": "works_offline",
+					"label": "Works offline / on low bandwidth",
+					"type": "boolean",
+					"defaultValue": false
+				},
+				{
+					"slug": "achievements",
+					"label": "Achievements",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "type",
+								"label": "Type",
+								"type": "select",
+								"required": true,
+								"options": [
+									"Award",
+									"Certification",
+									"Research"
+								]
+							},
+							{
+								"slug": "name",
+								"label": "Name",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "year",
+								"label": "Year",
+								"type": "integer"
+							},
+							{
+								"slug": "url",
+								"label": "Link",
+								"type": "url"
+							}
+						]
+					}
+				},
+				{
+					"slug": "open_to",
+					"label": "Open to",
+					"type": "multiSelect",
+					"validation": {
+						"options": [
+							"Distributors / resellers",
+							"Implementation partners",
+							"Government tenders",
+							"Pilots with schools",
+							"Investment"
+						]
+					}
+				},
+				{
+					"slug": "screenshots",
+					"label": "Screenshots (1–3, 16:9)",
+					"type": "repeater",
+					"validation": {
+						"maxItems": 3,
+						"subFields": [
+							{
+								"slug": "image",
+								"label": "Screenshot",
+								"type": "image",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "demo_video_url",
+					"label": "Demo video link",
+					"type": "url"
+				},
+				{
+					"slug": "contact_email",
+					"label": "Public contact email",
+					"type": "string"
+				},
+				{
+					"slug": "linkedin_url",
+					"label": "LinkedIn",
+					"type": "url"
+				},
+				{
+					"slug": "last_verified",
+					"label": "Last verified (shown as \"Last updated\")",
+					"type": "datetime"
+				},
+				{
+					"slug": "company_status",
+					"label": "Company status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "Active",
+					"validation": {
+						"options": [
+							"Active",
+							"Inactive",
+							"Closed"
+						]
+					}
+				},
+				{
+					"slug": "registry_code",
+					"label": "Registry code (admin only)",
+					"type": "string"
+				},
+				{
+					"slug": "submitter_name",
+					"label": "Submitter name (admin only)",
+					"type": "string"
+				},
+				{
+					"slug": "submitter_email",
+					"label": "Submitter email (admin only)",
+					"type": "string"
+				},
+				{
+					"slug": "source",
+					"label": "Source (admin only)",
+					"type": "select",
+					"validation": {
+						"options": [
+							"Form",
+							"Spreadsheet import",
+							"Admin"
+						]
+					}
+				},
+				{
+					"slug": "admin_notes",
+					"label": "Admin notes (admin only)",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"urlPattern": "/{slug}",
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "category",
+			"label": "Categories",
+			"labelSingular": "Category",
+			"hierarchical": false,
+			"collections": [
+				"solutions"
+			],
+			"terms": [
+				{
+					"slug": "language-learning",
+					"label": "Language Learning",
+					"description": "Estonian edtech solutions for learning and teaching languages, from early literacy to foreign languages."
+				},
+				{
+					"slug": "steam",
+					"label": "STEAM",
+					"description": "Estonian edtech solutions for science, technology, engineering, arts and mathematics."
+				},
+				{
+					"slug": "sen",
+					"label": "SEN (Special Educational Needs)",
+					"description": "Estonian edtech solutions that support learners with special educational needs and the people who teach them."
+				},
+				{
+					"slug": "administrative-systems",
+					"label": "Supportive / Administrative Systems",
+					"description": "Estonian systems that help schools and education authorities run timetables, administration and communication."
+				},
+				{
+					"slug": "21st-century-skills",
+					"label": "21st Century Skills",
+					"description": "Estonian edtech solutions for digital, collaboration, problem-solving and leadership skills."
+				},
+				{
+					"slug": "serious-gaming",
+					"label": "Serious Gaming",
+					"description": "Estonian game-based learning solutions that turn curriculum topics into play."
+				},
+				{
+					"slug": "teacher-support",
+					"label": "Teacher Support",
+					"description": "Estonian edtech solutions that save teachers time and support their professional growth."
+				},
+				{
+					"slug": "content-provider",
+					"label": "Content Provider",
+					"description": "Estonian providers of digital learning content and materials."
+				}
+			]
+		},
+		{
+			"name": "education_level",
+			"label": "Education levels",
+			"labelSingular": "Education level",
+			"hierarchical": false,
+			"collections": [
+				"solutions"
+			],
+			"terms": [
+				{
+					"slug": "early-childhood",
+					"label": "Early Childhood / Preschool (age 0–6)",
+					"description": "Estonian edtech solutions for kindergartens and preschool learning."
+				},
+				{
+					"slug": "primary-lower-secondary",
+					"label": "Primary and Lower Secondary (age 6–14)",
+					"description": "Estonian edtech solutions for basic school, grades 1–9."
+				},
+				{
+					"slug": "upper-secondary",
+					"label": "Upper Secondary (age 14–18)",
+					"description": "Estonian edtech solutions for upper secondary schools."
+				},
+				{
+					"slug": "higher-education",
+					"label": "Higher Education",
+					"description": "Estonian edtech solutions for universities and colleges."
+				},
+				{
+					"slug": "professional-learning",
+					"label": "Professional Learning",
+					"description": "Estonian edtech solutions for adult, workplace and professional learning."
+				}
+			]
+		},
+		{
+			"name": "target_user",
+			"label": "Target users",
+			"labelSingular": "Target user",
+			"hierarchical": false,
+			"collections": [
+				"solutions"
+			],
+			"terms": [
+				{
+					"slug": "students",
+					"label": "Students"
+				},
+				{
+					"slug": "teachers",
+					"label": "Teachers"
+				},
+				{
+					"slug": "parents",
+					"label": "Parents"
+				},
+				{
+					"slug": "school-leaders",
+					"label": "School leaders & administrators"
+				},
+				{
+					"slug": "hr-ld-teams",
+					"label": "HR / L&D teams"
+				},
+				{
+					"slug": "adult-learners",
+					"label": "Adult learners"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary Navigation",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Solutions",
+					"url": "/"
+				},
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				}
+			]
+		}
+	],
+	"content": {
+		"solutions": [
+			{
+				"id": "lugemiskaru",
+				"slug": "lugemiskaru",
+				"status": "published",
+				"data": {
+					"title": "Lugemiskaru",
+					"tagline": "Lugemiskaru is a reading app that teaches children aged 4–9 to read through short illustrated stories and phonics games.",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Lugemiskaru turns early reading practice into a daily ten-minute routine. Each session pairs a short illustrated story with phonics and word-building games that adapt to the child’s pace. Stories are written by children’s authors and recorded by native speakers, so children hear correct pronunciation while they read along."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Teachers get a class overview showing which sounds and words each child has mastered, and parents receive a weekly summary. The full story library can be downloaded to a tablet, so the app works in classrooms and homes without a stable internet connection. New languages are added together with local publishers."
+								}
+							]
+						}
+					],
+					"website": "https://lugemiskaru.example",
+					"founded_year": 2018,
+					"hq_city": "Tartu",
+					"membership": "Member",
+					"product_languages": [
+						"Estonian",
+						"English",
+						"Russian",
+						"Ukrainian"
+					],
+					"markets": [
+						"Estonia",
+						"Latvia",
+						"Finland",
+						"Ukraine"
+					],
+					"works_offline": true,
+					"achievements": [
+						{
+							"type": "Award",
+							"name": "Baltic Early Literacy Prize, winner",
+							"year": 2024
+						},
+						{
+							"type": "Research",
+							"name": "Reading fluency pilot in 14 Estonian kindergartens",
+							"year": 2023
+						}
+					],
+					"open_to": [
+						"Distributors / resellers",
+						"Pilots with schools"
+					],
+					"demo_video_url": "https://lugemiskaru.example/demo",
+					"contact_email": "info@lugemiskaru.example",
+					"linkedin_url": "https://linkedin.example/company/lugemiskaru",
+					"last_verified": "2026-10-14T00:00:00.000Z",
+					"company_status": "Active",
+					"registry_code": "SAMPLE",
+					"source": "Admin",
+					"admin_notes": "Fictional sample entry. Delete before launch."
+				},
+				"taxonomies": {
+					"category": [
+						"language-learning",
+						"content-provider"
+					],
+					"education_level": [
+						"early-childhood",
+						"primary-lower-secondary"
+					],
+					"target_user": [
+						"students",
+						"teachers",
+						"parents"
+					]
+				}
+			},
+			{
+				"id": "arvupesa",
+				"slug": "arvupesa",
+				"status": "published",
+				"data": {
+					"title": "Arvupesa",
+					"tagline": "Arvupesa is an adaptive maths practice platform for grades 1–9 that turns curriculum topics into short game levels.",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Arvupesa covers maths from counting to linear equations through more than 2,000 game levels. Each level targets one skill, and the platform adjusts the difficulty after every answer so pupils stay challenged without getting stuck. A wrong answer brings up a short hint or a worked example instead of a red cross."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Teachers assign topics in a few clicks and see in real time which skills the class has mastered and where individual pupils need help. Schools use Arvupesa for homework, differentiated practice in class and holiday catch-up programmes. Content is mapped to the national curriculum in each country where it is offered."
+								}
+							]
+						}
+					],
+					"website": "https://arvupesa.example",
+					"founded_year": 2016,
+					"hq_city": "Tallinn",
+					"membership": "Member",
+					"product_languages": [
+						"Estonian",
+						"English",
+						"Finnish",
+						"German"
+					],
+					"markets": [
+						"Estonia",
+						"Finland",
+						"Sweden",
+						"Germany",
+						"Poland"
+					],
+					"works_offline": false,
+					"achievements": [
+						{
+							"type": "Certification",
+							"name": "Learning-impact certification for adaptive practice tools",
+							"year": 2025
+						},
+						{
+							"type": "Award",
+							"name": "European Game-Based Learning Awards, shortlisted",
+							"year": 2023
+						}
+					],
+					"open_to": [
+						"Distributors / resellers",
+						"Government tenders",
+						"Investment"
+					],
+					"demo_video_url": "https://arvupesa.example/demo",
+					"contact_email": "info@arvupesa.example",
+					"linkedin_url": "https://linkedin.example/company/arvupesa",
+					"last_verified": "2026-09-30T00:00:00.000Z",
+					"company_status": "Active",
+					"registry_code": "SAMPLE",
+					"source": "Admin",
+					"admin_notes": "Fictional sample entry. Delete before launch."
+				},
+				"taxonomies": {
+					"category": [
+						"steam",
+						"serious-gaming"
+					],
+					"education_level": [
+						"primary-lower-secondary"
+					],
+					"target_user": [
+						"students",
+						"teachers"
+					]
+				}
+			},
+			{
+				"id": "sonasild",
+				"slug": "sonasild",
+				"status": "published",
+				"data": {
+					"title": "Sõnasild",
+					"tagline": "Sõnasild is a picture-based communication app that helps children with speech and language difficulties take part in lessons.",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Sõnasild gives non-speaking and minimally speaking children a voice in the classroom. Children build sentences by tapping symbols, and the app speaks them aloud in a natural child’s voice. Speech therapists set up personal vocabularies, and teachers add lesson-specific boards so a child can answer questions and join group work."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The app runs fully offline on low-cost Android tablets, which makes it practical for special schools and mainstream classrooms alike. A shared progress log keeps therapists, teachers and parents working towards the same communication goals."
+								}
+							]
+						}
+					],
+					"website": "https://sonasild.example",
+					"founded_year": 2021,
+					"hq_city": "Tallinn",
+					"membership": "Associate member",
+					"product_languages": [
+						"Estonian",
+						"English",
+						"Russian",
+						"Lithuanian"
+					],
+					"markets": [
+						"Estonia",
+						"Lithuania"
+					],
+					"works_offline": true,
+					"achievements": [
+						{
+							"type": "Research",
+							"name": "Classroom participation study with special schools in Tallinn",
+							"year": 2025
+						}
+					],
+					"open_to": [
+						"Implementation partners",
+						"Pilots with schools"
+					],
+					"contact_email": "info@sonasild.example",
+					"linkedin_url": "https://linkedin.example/company/sonasild",
+					"last_verified": "2026-10-02T00:00:00.000Z",
+					"company_status": "Active",
+					"registry_code": "SAMPLE",
+					"source": "Admin",
+					"admin_notes": "Fictional sample entry. Delete before launch."
+				},
+				"taxonomies": {
+					"category": [
+						"sen"
+					],
+					"education_level": [
+						"early-childhood",
+						"primary-lower-secondary"
+					],
+					"target_user": [
+						"students",
+						"teachers",
+						"parents"
+					]
+				}
+			},
+			{
+				"id": "plaanik",
+				"slug": "plaanik",
+				"status": "published",
+				"data": {
+					"title": "Plaanik",
+					"tagline": "Plaanik is a timetabling and substitution planning system for schools and school networks.",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Plaanik builds a school’s full timetable in minutes, taking into account teacher workloads, room availability, subject rules and part-time contracts. When a teacher is absent, it proposes qualified substitutes and notifies everyone affected, so the school day can start on time."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Municipalities and ministries use Plaanik to plan timetables across dozens of schools at once and to report on teacher workload and room use. The system connects to existing student information systems and is built for national-scale rollouts."
+								}
+							]
+						}
+					],
+					"website": "https://plaanik.example",
+					"founded_year": 2014,
+					"hq_city": "Tartu",
+					"membership": "Member",
+					"product_languages": [
+						"Estonian",
+						"English",
+						"Latvian"
+					],
+					"markets": [
+						"Estonia",
+						"Latvia",
+						"Kenya",
+						"United Arab Emirates"
+					],
+					"works_offline": false,
+					"achievements": [
+						{
+							"type": "Certification",
+							"name": "ISO/IEC 27001 information security certification",
+							"year": 2024
+						},
+						{
+							"type": "Award",
+							"name": "GovTech Education Challenge, winner",
+							"year": 2022
+						}
+					],
+					"open_to": [
+						"Government tenders",
+						"Implementation partners",
+						"Distributors / resellers"
+					],
+					"demo_video_url": "https://plaanik.example/demo",
+					"contact_email": "info@plaanik.example",
+					"linkedin_url": "https://linkedin.example/company/plaanik",
+					"last_verified": "2026-08-21T00:00:00.000Z",
+					"company_status": "Active",
+					"registry_code": "SAMPLE",
+					"source": "Admin",
+					"admin_notes": "Fictional sample entry. Delete before launch."
+				},
+				"taxonomies": {
+					"category": [
+						"administrative-systems"
+					],
+					"education_level": [
+						"primary-lower-secondary",
+						"upper-secondary"
+					],
+					"target_user": [
+						"school-leaders",
+						"teachers"
+					]
+				}
+			},
+			{
+				"id": "oskusruum",
+				"slug": "oskusruum",
+				"status": "published",
+				"data": {
+					"title": "Oskusruum",
+					"tagline": "Oskusruum is a microlearning platform that helps companies train employees in digital and leadership skills in ten minutes a day.",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Oskusruum delivers short, practical lessons on data literacy, cybersecurity basics, giving feedback and leading remote teams. Each lesson ends with a task employees apply in their own work that week, and managers see completion and skill progress across their teams."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Companies can upload their own training content next to the ready-made library. Founded in Tallinn, Oskusruum now runs its sales from Berlin and serves corporate clients across Europe and the Middle East, with the product team still based in Estonia."
+								}
+							]
+						}
+					],
+					"website": "https://oskusruum.example",
+					"founded_year": 2019,
+					"hq_city": "Abroad",
+					"membership": "Associate member",
+					"product_languages": [
+						"English",
+						"Estonian",
+						"Russian",
+						"German"
+					],
+					"markets": [
+						"Estonia",
+						"Germany",
+						"Poland",
+						"United Kingdom",
+						"United Arab Emirates"
+					],
+					"works_offline": false,
+					"achievements": [
+						{
+							"type": "Award",
+							"name": "Workplace Learning Startup of the Year, finalist",
+							"year": 2025
+						}
+					],
+					"open_to": [
+						"Distributors / resellers",
+						"Investment"
+					],
+					"demo_video_url": "https://oskusruum.example/demo",
+					"contact_email": "info@oskusruum.example",
+					"linkedin_url": "https://linkedin.example/company/oskusruum",
+					"last_verified": "2026-07-11T00:00:00.000Z",
+					"company_status": "Active",
+					"registry_code": "SAMPLE",
+					"source": "Admin",
+					"admin_notes": "Fictional sample entry. Delete before launch."
+				},
+				"taxonomies": {
+					"category": [
+						"21st-century-skills"
+					],
+					"education_level": [
+						"professional-learning",
+						"higher-education"
+					],
+					"target_user": [
+						"hr-ld-teams",
+						"adult-learners"
+					]
+				}
+			}
+		],
+		"pages": [
+			{
+				"id": "about",
+				"slug": "about",
+				"status": "published",
+				"data": {
+					"title": "About the directory",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This directory lists the edtech solutions built by EdTech Estonia members and associate members. Each entry describes one company and its solution: what it does, who it is for, which languages it is available in and where it is already used."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Companies submit their information through a form. The EdTech Estonia team reviews every submission before it is published and checks entries regularly. The date on each page shows when it was last verified."
+								}
+							]
+						}
+					]
+				}
+			}
+		]
+	}
+}

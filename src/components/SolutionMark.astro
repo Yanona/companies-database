@@ -1,0 +1,25 @@
+---
+import { Image } from "emdash/ui";
+import { initials, monogramColor } from "../lib/solutions";
+
+interface Props {
+	slug: string;
+	title: string;
+	/** Image field value from EmDash ({ id, src, alt, ... }). */
+	logo?: any;
+}
+
+const { slug, title, logo } = Astro.props;
+---
+
+{
+	logo?.src ? (
+		<div class="mark img">
+			<Image image={logo} alt={`${title} logo`} />
+		</div>
+	) : (
+		<div class="mark mono" style={`background:${monogramColor(slug)}`} aria-hidden="true">
+			{initials(title)}
+		</div>
+	)
+}

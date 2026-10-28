@@ -1,0 +1,79 @@
+---
+import Base from "../layouts/Base.astro";
+import SolutionRow from "./SolutionRow.astro";
+import { breadcrumbJsonLd, getSolutions, itemListJsonLd, type Term } from "../lib/solutions";
+
+interface Props {
+	/** Taxonomy name, as defined in the seed. */
+	taxonomy: string;
+	/** URL prefix of the landing pages, e.g. "/categories". */
+	basePath: string;
+	/** Browse-page filter key, e.g. "category". */
+	filterKey: string;
+	term: Term;
+}
+
+const { taxonomy, basePath, filterKey, term } = Astro.props;
+
+const { solutions, cacheHints } = await getSolutions({ [taxonomy]: term.slug });
+if (Astro.cache?.enabled) cacheHints.forEach((hint) => Astro.cache.set(hint));
+
+const origin = Astro.url.origin;
+const path = `${basePath}/${term.slug}`;
+const name = term.label.replace(/ \(age.*\)/, "");
+const title = `${name} solutions from Estonia`;
+const intro =
+	term.description ?? `Edtech solutions from EdTech Estonia members in the ${name} category.`;
+const countries = new Set(solutions.flatMap((s) => s.data.markets ?? [])).size;
+const description = `${solutions.length} ${name} solutions built by EdTech Estonia members. ${intro}`;
+const crumbs = [
+	{ name: "Solutions", path: "/" },
+	{ name: term.label, path },
+];
+---
+
+<Base
+	title={title}
+	description={description}
+	jsonLd={[
+		{
+			"@type": "CollectionPage",
+			"@id": `${origin}${path}#page`,
+			name: title,
+			description,
+			url: origin + path,
+			mainEntity: itemListJsonLd(origin, solutions),
+		},
+		breadcrumbJsonLd(origin, crumbs),
+	]}
+>
+	<section class="intro">
+		<div class="wrap">
+			<nav class="crumbs" aria-label="Breadcrumb">
+				<a href="/">Solutions</a><span aria-hidden="true">›</span><span aria-current="page">{term.label}</span>
+			</nav>
+			<h1>{title}</h1>
+			<p class="lede">{intro}</p>
+			<div class="stats">
+				<span><strong>{solutions.length}</strong> {solutions.length === 1 ? "solution" : "solutions"}</span>
+				<span>used in <strong>{countries}</strong> countries</span>
+				<a href={`/?${filterKey}=${term.slug}`}>Filter further on the browse page</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="wrap">
+		{
+			solutions.length ? (
+				<ul class="list" style="border-top: 1px solid var(--line)">
+					{solutions.map((s) => <SolutionRow solution={s} />)}
+				</ul>
+			) : (
+				<div class="empty">
+					<strong>No solutions in this group yet.</strong>
+					<a href="/">Browse all solutions</a>
+				</div>
+			)
+		}
+	</div>
+</Base>

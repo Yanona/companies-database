@@ -1,0 +1,226 @@
+---
+import { decodeSlug, getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import SolutionMark from "../../components/SolutionMark.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import {
+	breadcrumbJsonLd,
+	countryCode,
+	formatDate,
+	isAssociate,
+	lastUpdated,
+	solutionJsonLd,
+	withTerms,
+	type Achievement,
+} from "../../lib/solutions";
+
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) return Astro.rewrite("/404");
+
+const { entry, cacheHint } = await getEmDashEntry("solutions", slug);
+if (!entry) return Astro.rewrite("/404");
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const s = await withTerms(entry);
+const d = s.data;
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const origin = Astro.url.origin;
+const path = `/solutions/${s.slug}`;
+
+const seo = getSeoMeta(entry, {
+	siteTitle,
+	siteUrl: origin,
+	path,
+	defaultTitle: `${d.title}: ${s.categories[0]?.label ?? "EdTech"} solution from Estonia`,
+	defaultDescription: d.tagline,
+	defaultOgImage: d.screenshots?.[0]?.image?.src ?? d.logo?.src,
+});
+
+const primary = s.categories[0];
+const crumbs = [
+	{ name: "Solutions", path: "/" },
+	...(primary ? [{ name: primary.label, path: `/categories/${primary.slug}` }] : []),
+	{ name: d.title, path },
+];
+const updated = formatDate(lastUpdated(d));
+const markets: string[] = d.markets ?? [];
+const achievements: Achievement[] = d.achievements ?? [];
+const screenshots = (d.screenshots ?? []).filter((r: any) => r.image);
+const status = d.company_status ?? "Active";
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	image={seo.ogImage}
+	canonical={seo.canonical}
+	content={{ collection: "solutions", id: d.id, slug }}
+	jsonLd={[...solutionJsonLd(origin, s), breadcrumbJsonLd(origin, crumbs)]}
+>
+	<div class="wrap" style="padding-block: 24px 0">
+		<nav class="crumbs" aria-label="Breadcrumb">
+			{
+				crumbs.slice(0, -1).map((c) => (
+					<>
+						<a href={c.path}>{c.name}</a>
+						<span aria-hidden="true">›</span>
+					</>
+				))
+			}
+			<span aria-current="page">{d.title}</span>
+		</nav>
+
+		<div class="d-head">
+			<SolutionMark slug={s.slug} title={d.title} logo={d.logo} />
+			<div style="min-width:0">
+				<h1>
+					<span {...entry.edit.title}>{d.title}</span>
+					{isAssociate(d) && <span class="badge assoc">Associate member</span>}
+				</h1>
+				<p class="tag" {...entry.edit.tagline}>{d.tagline}</p>
+				<div class="actions">
+					<a class="btn primary" href={d.website} rel="noopener">Visit website ↗</a>
+					{d.demo_video_url && <a class="btn" href={d.demo_video_url} rel="noopener">Watch demo ↗</a>}
+				</div>
+				{
+					status !== "Active" && (
+						<p class="notice" role="status">
+							{status === "Closed"
+								? `${d.title} has closed. This page is kept for reference.`
+								: `${d.title} is currently inactive. Information may be out of date.`}
+						</p>
+					)
+				}
+			</div>
+		</div>
+
+		<div class="d-body">
+			<div class="d-main">
+				<section>
+					<h2>About {d.title}</h2>
+					<div class="prose" {...entry.edit.description}><PortableText value={d.description} /></div>
+				</section>
+
+				<section>
+					<h2>Screenshots</h2>
+					<div class="shots">
+						{
+							screenshots.length > 0
+								? screenshots.map((r: any, i: number) => (
+										<Image image={r.image} alt={r.image.alt || `${d.title} screenshot ${i + 1}`} />
+									))
+								: [1, 2, 3].map((n) => <div class="shot-empty">Screenshot {n}</div>)
+						}
+					</div>
+				</section>
+
+				<section>
+					<h2>Who it’s for</h2>
+					<div class="who">
+						{
+							s.categories.length > 0 && (
+								<div class="who-row">
+									<span>Category</span>
+									<div class="chips">
+										{s.categories.map((t) => <a class="chip" href={`/categories/${t.slug}`}>{t.label}</a>)}
+									</div>
+								</div>
+							)
+						}
+						{
+							s.levels.length > 0 && (
+								<div class="who-row">
+									<span>Education level</span>
+									<div class="chips">
+										{s.levels.map((t) => <a class="chip plain" href={`/levels/${t.slug}`}>{t.label}</a>)}
+									</div>
+								</div>
+							)
+						}
+						{
+							s.users.length > 0 && (
+								<div class="who-row">
+									<span>Target users</span>
+									<div class="chips">{s.users.map((t) => <span class="chip plain">{t.label}</span>)}</div>
+								</div>
+							)
+						}
+					</div>
+				</section>
+
+				{
+					achievements.length > 0 && (
+						<section>
+							<h2>Achievements</h2>
+							<ul class="ach">
+								{achievements.map((a) => (
+									<li>
+										<span class="type">{a.type}</span>
+										<span>{a.url ? <a href={a.url} rel="noopener">{a.name}</a> : a.name}</span>
+										<span class="yr">{a.year}</span>
+									</li>
+								))}
+							</ul>
+						</section>
+					)
+				}
+			</div>
+
+			<aside class="facts" aria-label="Key facts">
+				<dl>
+					{d.founded_year && (<div><dt>Founded</dt><dd class="num">{d.founded_year}</dd></div>)}
+					{d.hq_city && (<div><dt>Headquarters</dt><dd>{d.hq_city}</dd></div>)}
+					<div><dt>Membership</dt><dd>{d.membership ?? "Member"}</dd></div>
+					<div><dt>Works offline</dt><dd>{d.works_offline ? "Yes" : "No"}</dd></div>
+					{updated && (<div><dt>Last updated</dt><dd>{updated}</dd></div>)}
+				</dl>
+
+				{
+					d.product_languages?.length > 0 && (
+						<div class="block">
+							<h3>Product languages</h3>
+							<div class="chips">{d.product_languages.map((l: string) => <span class="chip plain">{l}</span>)}</div>
+						</div>
+					)
+				}
+
+				{
+					markets.length > 0 && (
+						<div class="block">
+							<h3>Used in {markets.length} {markets.length === 1 ? "country" : "countries"}</h3>
+							<div class="countries">
+								{markets.map((m) => (
+									<span class="country">
+										<code>{countryCode(m) ?? "··"}</code>
+										{m}
+									</span>
+								))}
+							</div>
+						</div>
+					)
+				}
+
+				{
+					d.open_to?.length > 0 && (
+						<div class="block">
+							<h3>Open to</h3>
+							<div class="chips">{d.open_to.map((o: string) => <span class="chip">{o}</span>)}</div>
+						</div>
+					)
+				}
+
+				{
+					(d.contact_email || d.linkedin_url) && (
+						<div class="block">
+							<h3>Contact</h3>
+							{d.contact_email && <a class="addr" href={`mailto:${d.contact_email}`}>{d.contact_email}</a>}
+							{d.linkedin_url && <a href={d.linkedin_url} rel="noopener">LinkedIn ↗</a>}
+						</div>
+					)
+				}
+			</aside>
+		</div>
+	</div>
+</Base>

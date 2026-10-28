@@ -1,0 +1,55 @@
+---
+import SolutionMark from "./SolutionMark.astro";
+import { isAssociate, lastUpdated, slugify, type Solution } from "../lib/solutions";
+
+interface Props {
+	solution: Solution;
+}
+
+const { solution: s } = Astro.props;
+const d = s.data;
+const updated = lastUpdated(d);
+const markets: string[] = d.markets ?? [];
+
+// Filter keys read by the browse page script. Values are space-separated slugs.
+const filterData = {
+	"data-category": s.categories.map((t) => t.slug).join(" "),
+	"data-level": s.levels.map((t) => t.slug).join(" "),
+	"data-user": s.users.map((t) => t.slug).join(" "),
+	"data-language": (d.product_languages ?? []).map(slugify).join(" "),
+	"data-market": markets.map(slugify).join(" "),
+	"data-open": (d.open_to ?? []).map(slugify).join(" "),
+	"data-offline": d.works_offline ? "yes" : "",
+	"data-search": [d.title, d.tagline, ...s.categories.map((t) => t.label)].join(" ").toLowerCase(),
+	"data-name": d.title,
+	"data-founded": String(d.founded_year ?? ""),
+	"data-updated": updated ? updated.toISOString() : "",
+};
+---
+
+<li class="row" {...filterData}>
+	<a href={`/solutions/${s.slug}`}>
+		<SolutionMark slug={s.slug} title={d.title} logo={d.logo} />
+		<div style="min-width:0">
+			<h2>
+				{d.title}
+				{isAssociate(d) && <span class="badge assoc">Associate member</span>}
+			</h2>
+			<p class="tag">{d.tagline}</p>
+			<div class="chips">
+				{s.categories.map((t) => <span class="chip">{t.label}</span>)}
+				{s.levels.map((t) => <span class="chip plain">{t.label.replace(/ \(age.*\)/, "")}</span>)}
+			</div>
+		</div>
+		<div class="meta">
+			<span>
+				Used in <strong>{markets.length}</strong> {markets.length === 1 ? "country" : "countries"}
+			</span>
+			{d.founded_year && (
+				<span>
+					Founded <strong>{d.founded_year}</strong>
+				</span>
+			)}
+		</div>
+	</a>
+</li>

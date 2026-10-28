@@ -1,0 +1,13 @@
+---
+import { decodeSlug, getTaxonomyTermsWithCacheHint } from "emdash";
+import TermLanding from "../../components/TermLanding.astro";
+import { TAXONOMIES } from "../../lib/solutions";
+
+const slug = decodeSlug(Astro.params.slug);
+const terms = await getTaxonomyTermsWithCacheHint(TAXONOMIES.category, { includeCounts: false });
+const term = slug ? terms.data.find((t: any) => t.slug === slug) : null;
+if (!term) return Astro.rewrite("/404");
+if (Astro.cache?.enabled) Astro.cache.set(terms.cacheHint);
+---
+
+<TermLanding taxonomy={TAXONOMIES.category} basePath="/categories" filterKey="category" term={term} />

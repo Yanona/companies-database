@@ -1,0 +1,142 @@
+---
+import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import "../styles/theme.css";
+
+interface Props {
+	title: string;
+	pageTitle?: string | null;
+	description?: string | null;
+	image?: string | null;
+	canonical?: string | null;
+	/** Structured data nodes; combined into one JSON-LD @graph. */
+	jsonLd?: Record<string, unknown>[];
+	/** Pass content reference for plugin page contributions on content pages */
+	content?: { collection: string; id: string; slug?: string | null };
+}
+
+const { title, pageTitle, description, image, canonical, jsonLd, content } = Astro.props;
+const [settingsResult, menuResult] = await Promise.all([
+	getSiteSettingsWithCacheHint(),
+	getMenuWithCacheHint("primary"),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(settingsResult.cacheHint);
+	Astro.cache.set(menuResult.cacheHint);
+}
+
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(settingsResult.data);
+const titleIncludesSiteName =
+	title === siteTitle || title.endsWith(` | ${siteTitle}`) || title.endsWith(` — ${siteTitle}`);
+const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
+const pageDescription = description ?? siteTagline;
+const menu = menuResult.data;
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: content ? "content" : "custom",
+	pageType: "website",
+	title: fullTitle,
+	pageTitle: pageTitle ?? title,
+	description: pageDescription,
+	canonical: canonical ?? Astro.url.origin + (path === "/" ? "/" : path),
+	image,
+	content,
+	siteName: siteTitle,
+});
+
+const structuredData = jsonLd?.length
+	? JSON.stringify({ "@context": "https://schema.org", "@graph": jsonLd }).replace(/</g, "\\u003c")
+	: null;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script is:inline>
+			// Apply the visitor's saved theme before first paint; without a saved choice the system setting applies.
+			try {
+				const t = localStorage.getItem("theme");
+				if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+			} catch {}
+		</script>
+		<title>{fullTitle}</title>
+		<link rel="icon" href="/logo.png" type="image/png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap"
+		/>
+		<EmDashHead page={pageCtx} />
+		{structuredData && <script type="application/ld+json" set:html={structuredData} />}
+	</head>
+	<body>
+		<EmDashBodyStart page={pageCtx} />
+
+		<header class="site-header">
+			<div class="wrap">
+				<a class="brand" href="/">
+					<img src="/logo.png" alt="EdTech Estonia" width="136" height="38" />
+					<span>Solutions directory</span>
+				</a>
+				<nav class="site-nav" aria-label="Main">
+					{
+						menu?.items.map((item) => (
+							<a
+								href={item.url}
+								target={item.target}
+								rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
+								aria-current={item.url === path ? "page" : undefined}
+							>
+								{item.label}
+							</a>
+						))
+					}
+					<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme">
+						<svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+						<svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+					</button>
+				</nav>
+			</div>
+		</header>
+
+		<main>
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<div class="wrap">
+				<span>EdTech Estonia · Solutions directory</span>
+				<a href="https://www.edtechestonia.org" rel="noopener">edtechestonia.org</a>
+			</div>
+		</footer>
+
+		<EmDashBodyEnd page={pageCtx} />
+
+		<script>
+			const root = document.documentElement;
+			const button = document.querySelector("#themeToggle") as unknown as HTMLButtonElement;
+			const systemDark = matchMedia("(prefers-color-scheme: dark)");
+			const current = () => root.dataset.theme ?? (systemDark.matches ? "dark" : "light");
+			const label = () =>
+				button.setAttribute("aria-label", current() === "dark" ? "Switch to light theme" : "Switch to dark theme");
+
+			button.addEventListener("click", () => {
+				const next = current() === "dark" ? "light" : "dark";
+				root.dataset.theme = next;
+				try {
+					localStorage.setItem("theme", next);
+				} catch {}
+				label();
+			});
+			systemDark.addEventListener("change", label);
+			label();
+		</script>
+	</body>
+</html>

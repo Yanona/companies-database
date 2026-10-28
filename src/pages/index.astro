@@ -1,0 +1,237 @@
+---
+import { getSiteSettings, getTaxonomyTerms } from "emdash";
+import Base from "../layouts/Base.astro";
+import SolutionRow from "../components/SolutionRow.astro";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { getSolutions, itemListJsonLd, slugify, TAXONOMIES, type Solution } from "../lib/solutions";
+
+const [{ solutions, cacheHints }, categoryTerms, levelTerms, userTerms, settings] = await Promise.all([
+	getSolutions(),
+	getTaxonomyTerms(TAXONOMIES.category),
+	getTaxonomyTerms(TAXONOMIES.level),
+	getTaxonomyTerms(TAXONOMIES.user),
+	getSiteSettings(),
+]);
+if (Astro.cache?.enabled) cacheHints.forEach((hint) => Astro.cache.set(hint));
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(settings);
+
+interface Option {
+	value: string;
+	label: string;
+	count: number;
+}
+interface Group {
+	key: string;
+	title: string;
+	options: Option[];
+}
+
+const termGroup = (key: string, title: string, terms: any[], pick: (s: Solution) => { slug: string }[]): Group => ({
+	key,
+	title,
+	options: terms
+		.map((t) => ({
+			value: t.slug,
+			label: t.label,
+			count: solutions.filter((s) => pick(s).some((x) => x.slug === t.slug)).length,
+		}))
+		.filter((o) => o.count > 0),
+});
+
+const fieldGroup = (key: string, title: string, field: string, sortByLabel = false): Group => {
+	const counts = new Map<string, number>();
+	for (const s of solutions) for (const v of (s.data[field] ?? []) as string[]) counts.set(v, (counts.get(v) ?? 0) + 1);
+	const options = [...counts].map(([label, count]) => ({ value: slugify(label), label, count }));
+	if (sortByLabel) options.sort((a, b) => a.label.localeCompare(b.label));
+	return { key, title, options };
+};
+
+const groups: Group[] = [
+	termGroup("category", "Category", categoryTerms, (s) => s.categories),
+	termGroup("level", "Education level", levelTerms, (s) => s.levels),
+	termGroup("user", "Target users", userTerms, (s) => s.users),
+	fieldGroup("language", "Product languages", "product_languages"),
+	fieldGroup("market", "Used in", "markets", true),
+	fieldGroup("open", "Open to", "open_to"),
+].filter((g) => g.options.length > 0);
+const offlineCount = solutions.filter((s) => s.data.works_offline).length;
+
+const origin = Astro.url.origin;
+const description = `Browse ${solutions.length} edtech solutions built by EdTech Estonia members, filtered by category, education level and the countries where they are used.`;
+---
+
+<Base
+	title={siteTitle}
+	description={description}
+	jsonLd={[
+		{
+			"@type": "CollectionPage",
+			"@id": `${origin}/#page`,
+			name: siteTitle,
+			description,
+			url: `${origin}/`,
+			mainEntity: itemListJsonLd(origin, solutions),
+		},
+	]}
+>
+	<section class="intro">
+		<div class="wrap">
+			<h1>{siteTagline}</h1>
+			<p class="lede">
+				Find Estonian edtech solutions by category, education level and the countries where they are already in use.
+			</p>
+			<label class="search" for="q">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+					><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg
+				>
+				<input id="q" type="search" placeholder="Search by name or what it does" autocomplete="off" aria-label="Search solutions" />
+			</label>
+		</div>
+	</section>
+
+	<div class="wrap browse">
+		<details class="filters" id="filters" open>
+			<summary><span>Filters</span><span id="activeCount" class="num"></span></summary>
+			<div class="filter-body">
+				{
+					groups.map((g) => (
+						<fieldset>
+							<legend>{g.title}</legend>
+							{g.options.map((o) => (
+								<label class="opt" for={`f-${g.key}-${o.value}`}>
+									<input type="checkbox" id={`f-${g.key}-${o.value}`} data-key={g.key} value={o.value} />
+									<span class="l">{o.label}</span>
+									<span class="c">{o.count}</span>
+								</label>
+							))}
+						</fieldset>
+					))
+				}
+				{
+					offlineCount > 0 && (
+						<fieldset>
+							<legend>Availability</legend>
+							<label class="opt" for="f-offline-yes">
+								<input type="checkbox" id="f-offline-yes" data-key="offline" value="yes" />
+								<span class="l">Works offline / low bandwidth</span>
+								<span class="c">{offlineCount}</span>
+							</label>
+						</fieldset>
+					)
+				}
+				<button class="link-btn" id="clearAll" type="button" hidden>Clear all filters</button>
+			</div>
+		</details>
+
+		<div style="min-width:0">
+			<div class="results-head">
+				<span class="count" id="count">{solutions.length} solutions</span>
+				<label for="sort"
+					>Sort
+					<select id="sort">
+						<option value="name">Name A–Z</option>
+						<option value="updated">Recently updated</option>
+						<option value="founded">Newest company</option>
+					</select>
+				</label>
+			</div>
+			<ul class="list" id="list">
+				{solutions.map((s) => <SolutionRow solution={s} />)}
+			</ul>
+			<div class="empty" id="empty" hidden>
+				<strong>No solutions match these filters.</strong>
+				<span>Remove a filter or try a different search term.</span>
+				<button class="link-btn" type="button" id="clearEmpty">Clear all filters</button>
+			</div>
+			{
+				solutions.length === 0 && (
+					<div class="empty">
+						<strong>No solutions published yet.</strong>
+						<a href="/_emdash/admin/content/solutions/new">Add the first solution</a>
+					</div>
+				)
+			}
+		</div>
+	</div>
+</Base>
+
+<script>
+	const list = document.querySelector<HTMLUListElement>("#list")!;
+	const rows = [...list.querySelectorAll<HTMLLIElement>("li.row")];
+	const boxes = [...document.querySelectorAll<HTMLInputElement>(".filter-body input[type=checkbox]")];
+	const search = document.querySelector<HTMLInputElement>("#q")!;
+	// Cast via unknown: the Workers types in tsconfig declare their own global `Element`.
+	const sort = document.querySelector("#sort") as unknown as HTMLSelectElement;
+	const filters = document.querySelector<HTMLDetailsElement>("#filters")!;
+	const keys = [...new Set(boxes.map((b) => b.dataset.key!))];
+
+	const values = (row: HTMLElement, key: string) => (row.dataset[key] ?? "").split(" ").filter(Boolean);
+	const selected = (key: string) => boxes.filter((b) => b.dataset.key === key && b.checked).map((b) => b.value);
+
+	function matches(row: HTMLElement, skipKey?: string) {
+		const q = search.value.trim().toLowerCase();
+		if (q && !(row.dataset.search ?? "").includes(q)) return false;
+		for (const key of keys) {
+			if (key === skipKey) continue;
+			const sel = selected(key);
+			if (sel.length && !values(row, key).some((v) => sel.includes(v))) return false;
+		}
+		return true;
+	}
+
+	function update() {
+		let shown = 0;
+		for (const row of rows) {
+			const ok = matches(row);
+			row.hidden = !ok;
+			if (ok) shown++;
+		}
+		for (const box of boxes) {
+			const n = rows.filter((r) => matches(r, box.dataset.key) && values(r, box.dataset.key!).includes(box.value)).length;
+			const label = box.closest(".opt") as HTMLElement;
+			label.querySelector(".c")!.textContent = String(n);
+			const empty = n === 0 && !box.checked;
+			label.classList.toggle("is-empty", empty);
+			box.disabled = empty;
+		}
+		const active = boxes.filter((b) => b.checked).length;
+		document.getElementById("count")!.textContent = `${shown} ${shown === 1 ? "solution" : "solutions"}`;
+		document.getElementById("activeCount")!.textContent = active ? `${active} active` : "";
+		document.getElementById("clearAll")!.hidden = !(active || search.value);
+		document.getElementById("empty")!.hidden = shown > 0 || rows.length === 0;
+	}
+
+	function clearAll() {
+		boxes.forEach((b) => (b.checked = false));
+		search.value = "";
+		update();
+	}
+
+	function applySort() {
+		const by = sort.value;
+		const sorted = [...rows].sort((a, b) => {
+			if (by === "updated") return (b.dataset.updated ?? "").localeCompare(a.dataset.updated ?? "");
+			if (by === "founded") return Number(b.dataset.founded) - Number(a.dataset.founded);
+			return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "", "et");
+		});
+		sorted.forEach((row) => list.appendChild(row));
+	}
+
+	boxes.forEach((b) => b.addEventListener("change", update));
+	search.addEventListener("input", update);
+	sort.addEventListener("change", applySort);
+	document.getElementById("clearAll")!.addEventListener("click", clearAll);
+	document.getElementById("clearEmpty")!.addEventListener("click", clearAll);
+
+	// Pre-select a filter from the URL, e.g. /?category=steam
+	const params = new URLSearchParams(location.search);
+	for (const [key, value] of params) {
+		const box = boxes.find((b) => b.dataset.key === key && b.value === value);
+		if (box) box.checked = true;
+	}
+
+	const wide = matchMedia("(min-width: 901px)");
+	filters.open = wide.matches;
+	wide.addEventListener("change", (e) => (filters.open = e.matches));
+	update();
+</script>
