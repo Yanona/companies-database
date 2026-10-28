@@ -8,6 +8,7 @@
 		{
 			"binding": "DB",
 			"database_name": "edtech-estonia-directory",
+			"database_id": "cc56b371-ed51-43f2-9462-50ed7c568fb2",
 		},
 	],
 	"r2_buckets": [
