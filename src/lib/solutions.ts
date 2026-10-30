@@ -87,9 +87,9 @@ export function formatDate(value: Date | string | null | undefined): string | nu
 	return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-/** Last verified date, falling back to the last edit. */
+/** Date of the last edit, shown publicly as "Last updated". */
 export function lastUpdated(data: any): Date | null {
-	const v = data.last_verified ?? data.updatedAt;
+	const v = data.updatedAt;
 	if (!v) return null;
 	const d = v instanceof Date ? v : new Date(v);
 	return Number.isNaN(d.getTime()) ? null : d;

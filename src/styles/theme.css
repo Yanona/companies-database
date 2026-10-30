@@ -216,6 +216,10 @@ p {
 	gap: 12px;
 	flex-wrap: wrap;
 }
+.footer-links {
+	display: flex;
+	gap: 16px;
+}
 
 /* Page intro */
 .intro .wrap {

@@ -64,13 +64,12 @@ Legend: **Req** = required to publish · **Filter** = browse/filter facet · **F
 | `contact_email` | email | | | ✅ | Public. Generic inbox preferred (info@, partners@) |
 | `linkedin_url` | url | | | ✅ | |
 
-### Admin-only (never public, except `last_verified`)
+### Admin-only (never public)
 
 | Field | Type | Notes |
 |---|---|---|
 | `registry_code` | text | Estonian Business Register code. Asked in the form, never published |
 | `status` | select: draft / published / inactive / closed | Only `published` is listed. `closed` keeps the URL alive with a notice (good for SEO) |
-| `last_verified` | date | Shown publicly as "Last updated" |
 | `submitter_name` | text | |
 | `submitter_email` | email | |
 | `source` | select: form / spreadsheet import / admin | |
@@ -160,7 +159,7 @@ Other filters (target users, languages, markets, offline, open to) work on the b
 
 Each solution page outputs JSON-LD:
 
-- **`SoftwareApplication`**: `name`, `description` (tagline), `url` (website), `image` (logo), `screenshot`, `applicationCategory` = `"EducationalApplication"`, `inLanguage` (from `product_languages`), `audience` (from `target_users` / `education_levels`), `award` (achievements of type Award), `dateModified` (from `last_verified`)
+- **`SoftwareApplication`**: `name`, `description` (tagline), `url` (website), `image` (logo), `screenshot`, `applicationCategory` = `"EducationalApplication"`, `inLanguage` (from `product_languages`), `audience` (from `target_users` / `education_levels`), `award` (achievements of type Award), `dateModified` (date of the last edit)
 - **`Organization`** (as `publisher`): `name`, `foundingDate`, `address.addressLocality` (`hq_city`), `address.addressCountry` = `"EE"`, `areaServed` (from `markets`), `sameAs` (LinkedIn), `email`, `memberOf` (EdTech Estonia)
 - **`BreadcrumbList`**: Home › Category › Solution
 
@@ -215,7 +214,7 @@ Category and education level pages output **`CollectionPage`** + **`ItemList`**.
 24. Consent: *"I confirm the information is accurate and agree to its publication in the database."* — *checkbox, required*
 
 ### Mapping the form to fields
-Google Sheets responses map 1:1 to the fields above. Q13 → `markets` (admin normalizes to country codes). Q15 → `achievements` (admin parses). Q22–23 → `submitter_*`. `slug`, `status`, `last_verified`, `source` and `admin_notes` are set by the admin. `membership` is verified by the admin.
+Google Sheets responses map 1:1 to the fields above. Q13 → `markets` (admin normalizes to country codes). Q15 → `achievements` (admin parses). Q22–23 → `submitter_*`. `slug`, `status`, `source` and `admin_notes` are set by the admin. `membership` is verified by the admin.
 
 ---
 

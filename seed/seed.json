@@ -30,8 +30,7 @@
 				"listColumns": [
 					"title",
 					"membership",
-					"company_status",
-					"last_verified"
+					"company_status"
 				]
 			},
 			"fields": [
@@ -472,11 +471,6 @@
 					"type": "url"
 				},
 				{
-					"slug": "last_verified",
-					"label": "Last verified (shown as \"Last updated\")",
-					"type": "datetime"
-				},
-				{
 					"slug": "company_status",
 					"label": "Company status",
 					"type": "select",
@@ -762,7 +756,6 @@
 					"demo_video_url": "https://lugemiskaru.example/demo",
 					"contact_email": "info@lugemiskaru.example",
 					"linkedin_url": "https://linkedin.example/company/lugemiskaru",
-					"last_verified": "2026-10-14T00:00:00.000Z",
 					"company_status": "Active",
 					"registry_code": "SAMPLE",
 					"source": "Admin",
@@ -851,7 +844,6 @@
 					"demo_video_url": "https://arvupesa.example/demo",
 					"contact_email": "info@arvupesa.example",
 					"linkedin_url": "https://linkedin.example/company/arvupesa",
-					"last_verified": "2026-09-30T00:00:00.000Z",
 					"company_status": "Active",
 					"registry_code": "SAMPLE",
 					"source": "Admin",
@@ -928,7 +920,6 @@
 					],
 					"contact_email": "info@sonasild.example",
 					"linkedin_url": "https://linkedin.example/company/sonasild",
-					"last_verified": "2026-10-02T00:00:00.000Z",
 					"company_status": "Active",
 					"registry_code": "SAMPLE",
 					"source": "Admin",
@@ -1014,7 +1005,6 @@
 					"demo_video_url": "https://plaanik.example/demo",
 					"contact_email": "info@plaanik.example",
 					"linkedin_url": "https://linkedin.example/company/plaanik",
-					"last_verified": "2026-08-21T00:00:00.000Z",
 					"company_status": "Active",
 					"registry_code": "SAMPLE",
 					"source": "Admin",
@@ -1095,7 +1085,6 @@
 					"demo_video_url": "https://oskusruum.example/demo",
 					"contact_email": "info@oskusruum.example",
 					"linkedin_url": "https://linkedin.example/company/oskusruum",
-					"last_verified": "2026-07-11T00:00:00.000Z",
 					"company_status": "Active",
 					"registry_code": "SAMPLE",
 					"source": "Admin",

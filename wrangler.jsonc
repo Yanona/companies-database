@@ -11,12 +11,13 @@
 			"database_id": "cc56b371-ed51-43f2-9462-50ed7c568fb2",
 		},
 	],
-	"r2_buckets": [
-		{
-			"binding": "MEDIA",
-			"bucket_name": "edtech-estonia-media",
-		},
-	],
+	// R2 media bucket not created yet. Uncomment once it exists:
+	// "r2_buckets": [
+	// 	{
+	// 		"binding": "MEDIA",
+	// 		"bucket_name": "edtech-estonia-media",
+	// 	},
+	// ],
 	// Sandboxed plugins require Worker Loader, available on Workers paid plans. Uncomment to enable:
 	// "worker_loaders": [{ "binding": "LOADER" }],
 	// General maintenance cron trigger

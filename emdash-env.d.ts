@@ -40,7 +40,6 @@ export interface Solution {
   demo_video_url?: string;
   contact_email?: string;
   linkedin_url?: string;
-  last_verified?: string;
   company_status: "Active" | "Inactive" | "Closed";
   registry_code?: string;
   submitter_name?: string;
