@@ -24,7 +24,17 @@ interface Group {
 	key: string;
 	title: string;
 	options: Option[];
+	/** Show only this many options until "Show all" is clicked. */
+	collapseTo?: number;
+	/** Noun for the "Show all N …" link, e.g. "countries". */
+	noun?: string;
+	/** Placeholder for the search box shown when the list is expanded. */
+	searchHint?: string;
 }
+
+// Collapse a long list only when it saves real space
+const COLLAPSE_TO = 6;
+const COLLAPSE_FROM = 9;
 
 const termGroup = (key: string, title: string, terms: any[], pick: (s: Solution) => { slug: string }[]): Group => ({
 	key,
@@ -38,20 +48,27 @@ const termGroup = (key: string, title: string, terms: any[], pick: (s: Solution)
 		.filter((o) => o.count > 0),
 });
 
-const fieldGroup = (key: string, title: string, field: string, sortByLabel = false): Group => {
+const fieldGroup = (key: string, title: string, field: string, sortByCount = false): Group => {
 	const counts = new Map<string, number>();
 	for (const s of solutions) for (const v of (s.data[field] ?? []) as string[]) counts.set(v, (counts.get(v) ?? 0) + 1);
 	const options = [...counts].map(([label, count]) => ({ value: slugify(label), label, count }));
-	if (sortByLabel) options.sort((a, b) => a.label.localeCompare(b.label));
+	if (sortByCount) options.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 	return { key, title, options };
 };
+
+const marketGroup = fieldGroup("market", "Used in", "markets", true);
+if (marketGroup.options.length >= COLLAPSE_FROM) {
+	marketGroup.collapseTo = COLLAPSE_TO;
+	marketGroup.noun = "countries";
+	marketGroup.searchHint = "Type a country…";
+}
 
 const groups: Group[] = [
 	termGroup("category", "Category", categoryTerms, (s) => s.categories),
 	termGroup("level", "Education level", levelTerms, (s) => s.levels),
 	termGroup("user", "Target users", userTerms, (s) => s.users),
 	fieldGroup("language", "Product languages", "product_languages"),
-	fieldGroup("market", "Used in", "markets", true),
+	marketGroup,
 	fieldGroup("open", "Open to", "open_to"),
 ].filter((g) => g.options.length > 0);
 const offlineCount = solutions.filter((s) => s.data.works_offline).length;
@@ -95,8 +112,18 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 			<div class="filter-body">
 				{
 					groups.map((g) => (
-						<fieldset>
+						<fieldset data-collapse-to={g.collapseTo}>
 							<legend>{g.title}</legend>
+							{g.collapseTo && (
+								<input
+									type="search"
+									class="opt-search"
+									placeholder={g.searchHint}
+									aria-label={`Search ${g.noun}`}
+									autocomplete="off"
+									hidden
+								/>
+							)}
 							{g.options.map((o) => (
 								<label class="opt" for={`f-${g.key}-${o.value}`}>
 									<input type="checkbox" id={`f-${g.key}-${o.value}`} data-key={g.key} value={o.value} />
@@ -104,6 +131,11 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 									<span class="c">{o.count}</span>
 								</label>
 							))}
+							{g.collapseTo && (
+								<button class="link-btn more-toggle" type="button" aria-expanded="false" data-label={`Show all ${g.options.length} ${g.noun}`}>
+									Show all {g.options.length} {g.noun}
+								</button>
+							)}
 						</fieldset>
 					))
 				}
@@ -199,6 +231,50 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 		document.getElementById("activeCount")!.textContent = active ? `${active} active` : "";
 		document.getElementById("clearAll")!.hidden = !(active || search.value);
 		document.getElementById("empty")!.hidden = shown > 0 || rows.length === 0;
+		collapsibles.forEach((c) => c.render());
+		syncUrl();
+	}
+
+	// Long option lists (e.g. countries) show the top few until "Show all" is clicked; ticked options always stay visible
+	const collapsibles = [...document.querySelectorAll<HTMLFieldSetElement>("fieldset[data-collapse-to]")].map((fieldset) => {
+		const limit = Number(fieldset.dataset.collapseTo);
+		const opts = [...fieldset.querySelectorAll<HTMLLabelElement>(".opt")];
+		const toggle = fieldset.querySelector<HTMLButtonElement>(".more-toggle")!;
+		const filter = fieldset.querySelector<HTMLInputElement>(".opt-search")!;
+		let expanded = false;
+
+		function render() {
+			const q = filter.value.trim().toLowerCase();
+			opts.forEach((opt, i) => {
+				const checked = opt.querySelector("input")!.checked;
+				const text = opt.querySelector(".l")!.textContent!.toLowerCase();
+				const visible = checked || (expanded ? !q || text.includes(q) : i < limit);
+				opt.classList.toggle("is-hidden", !visible);
+			});
+			filter.hidden = !expanded;
+			toggle.textContent = expanded ? "Show fewer" : toggle.dataset.label!;
+			toggle.setAttribute("aria-expanded", String(expanded));
+		}
+
+		toggle.addEventListener("click", () => {
+			expanded = !expanded;
+			filter.value = "";
+			render();
+			if (expanded) filter.focus();
+		});
+		filter.addEventListener("input", render);
+		return { render };
+	});
+
+	// Mirror filters, search and sort in the address bar so the view can be shared, e.g. /?category=steam&level=upper-secondary
+	function syncUrl() {
+		const params = new URLSearchParams();
+		const q = search.value.trim();
+		if (q) params.set("q", q);
+		for (const box of boxes) if (box.checked) params.append(box.dataset.key!, box.value);
+		if (sort.value !== "name") params.set("sort", sort.value);
+		const query = params.toString();
+		history.replaceState(null, "", query ? `?${query}` : location.pathname);
 	}
 
 	function clearAll() {
@@ -215,6 +291,7 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 			return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "", "et");
 		});
 		sorted.forEach((row) => list.appendChild(row));
+		syncUrl();
 	}
 
 	boxes.forEach((b) => b.addEventListener("change", update));
@@ -223,11 +300,17 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 	document.getElementById("clearAll")!.addEventListener("click", clearAll);
 	document.getElementById("clearEmpty")!.addEventListener("click", clearAll);
 
-	// Pre-select a filter from the URL, e.g. /?category=steam
+	// Restore filters, search and sort from the URL
 	const params = new URLSearchParams(location.search);
 	for (const [key, value] of params) {
 		const box = boxes.find((b) => b.dataset.key === key && b.value === value);
 		if (box) box.checked = true;
+	}
+	search.value = params.get("q") ?? "";
+	const sortParam = params.get("sort");
+	if (sortParam && [...sort.options].some((o) => o.value === sortParam)) {
+		sort.value = sortParam;
+		applySort();
 	}
 
 	const wide = matchMedia("(min-width: 901px)");

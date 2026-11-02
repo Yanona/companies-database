@@ -81,8 +81,8 @@ const status = d.company_status ?? "Active";
 				</h1>
 				<p class="tag" {...entry.edit.tagline}>{d.tagline}</p>
 				<div class="actions">
-					<a class="btn primary" href={d.website} rel="noopener">Visit website ↗</a>
-					{d.demo_video_url && <a class="btn" href={d.demo_video_url} rel="noopener">Watch demo ↗</a>}
+					<a class="btn primary" href={d.website} target="_blank" rel="noopener">Visit website ↗</a>
+					{d.demo_video_url && <a class="btn" href={d.demo_video_url} target="_blank" rel="noopener">Watch demo ↗</a>}
 				</div>
 				{
 					status !== "Active" && (
@@ -216,7 +216,7 @@ const status = d.company_status ?? "Active";
 						<div class="block">
 							<h3>Contact</h3>
 							{d.contact_email && <a class="addr" href={`mailto:${d.contact_email}`}>{d.contact_email}</a>}
-							{d.linkedin_url && <a href={d.linkedin_url} rel="noopener">LinkedIn ↗</a>}
+							{d.linkedin_url && <a href={d.linkedin_url} target="_blank" rel="noopener">LinkedIn ↗</a>}
 						</div>
 					)
 				}

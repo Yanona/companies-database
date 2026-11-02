@@ -146,18 +146,6 @@ p {
 	border-radius: 8px;
 	background: var(--logo-bg);
 }
-.brand span {
-	font-weight: 500;
-	font-size: 14px;
-	color: var(--muted);
-	padding-left: 12px;
-	border-left: 1px solid var(--line);
-}
-@media (max-width: 560px) {
-	.brand span {
-		display: none;
-	}
-}
 .site-nav {
 	display: flex;
 	gap: 20px;
@@ -373,6 +361,26 @@ legend {
 	font-size: 12px;
 	color: var(--muted);
 	font-variant-numeric: tabular-nums;
+}
+.opt.is-hidden {
+	display: none;
+}
+.opt-search {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+	color: var(--ink);
+	font: 400 14px var(--f-body);
+	padding: 6px 10px;
+	margin-bottom: 4px;
+	outline: none;
+}
+.opt-search:focus {
+	border-color: var(--accent);
+}
+.more-toggle {
+	margin-top: 4px;
+	font-size: 13px;
 }
 .opt.is-empty {
 	color: var(--muted);
