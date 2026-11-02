@@ -2,11 +2,13 @@
 import { decodeSlug, getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
+import BackLink from "../../components/BackLink.astro";
+import Icon, { type IconName } from "../../components/Icon.astro";
+import Flag from "../../components/Flag.astro";
 import SolutionMark from "../../components/SolutionMark.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import {
 	breadcrumbJsonLd,
-	countryCode,
 	formatDate,
 	isAssociate,
 	lastUpdated,
@@ -47,6 +49,14 @@ const crumbs = [
 const updated = formatDate(lastUpdated(d));
 const markets: string[] = d.markets ?? [];
 const achievements: Achievement[] = d.achievements ?? [];
+const OPEN_TO_ICONS: Record<string, IconName> = {
+	"Distributors / resellers": "handshake",
+	"Implementation partners": "puzzle",
+	"Government tenders": "landmark",
+	"Pilots with schools": "school",
+	Investment: "coins",
+};
+
 const screenshots = (d.screenshots ?? []).filter((r: any) => r.image);
 const status = d.company_status ?? "Active";
 ---
@@ -61,17 +71,7 @@ const status = d.company_status ?? "Active";
 	jsonLd={[...solutionJsonLd(origin, s), breadcrumbJsonLd(origin, crumbs)]}
 >
 	<div class="wrap" style="padding-block: 24px 0">
-		<nav class="crumbs" aria-label="Breadcrumb">
-			{
-				crumbs.slice(0, -1).map((c) => (
-					<>
-						<a href={c.path}>{c.name}</a>
-						<span aria-hidden="true">›</span>
-					</>
-				))
-			}
-			<span aria-current="page">{d.title}</span>
-		</nav>
+		<BackLink />
 
 		<div class="d-head">
 			<SolutionMark slug={s.slug} title={d.title} logo={d.logo} />
@@ -82,8 +82,32 @@ const status = d.company_status ?? "Active";
 				</h1>
 				<p class="tag" {...entry.edit.tagline}>{d.tagline}</p>
 				<div class="actions">
-					<a class="btn primary" href={d.website} target="_blank" rel="noopener">Visit website ↗</a>
-					{d.demo_video_url && <a class="btn" href={d.demo_video_url} target="_blank" rel="noopener">Watch demo ↗</a>}
+					<a class="btn primary" href={d.website} target="_blank" rel="noopener">
+						Visit website
+						<Icon name="arrow-up-right" />
+					</a>
+					{
+						d.demo_video_url && (
+							<a class="btn" href={d.demo_video_url} target="_blank" rel="noopener">
+								Watch demo
+								<Icon name="arrow-up-right" />
+							</a>
+						)
+					}
+					{
+						d.contact_email && (
+							<a class="btn icon-btn" href={`mailto:${d.contact_email}`} aria-label={`Email ${d.contact_email}`} title={d.contact_email}>
+								<Icon name="mail" />
+							</a>
+						)
+					}
+					{
+						d.linkedin_url && (
+							<a class="btn icon-btn" href={d.linkedin_url} target="_blank" rel="noopener" aria-label={`${d.title} on LinkedIn`} title="LinkedIn">
+								<Icon name="linkedin" />
+							</a>
+						)
+					}
 				</div>
 				{
 					status !== "Active" && (
@@ -182,7 +206,10 @@ const status = d.company_status ?? "Active";
 					d.product_languages?.length > 0 && (
 						<div class="block">
 							<h3>Product languages</h3>
-							<div class="chips">{d.product_languages.map((l: string) => <span class="chip plain">{l}</span>)}</div>
+							<p class="icon-line">
+								<Icon name="languages" />
+								<span>{d.product_languages.join(", ")}</span>
+							</p>
 						</div>
 					)
 				}
@@ -194,7 +221,7 @@ const status = d.company_status ?? "Active";
 							<div class="countries">
 								{markets.map((m) => (
 									<span class="country">
-										<code>{countryCode(m) ?? "··"}</code>
+										<Flag country={m} />
 										{m}
 									</span>
 								))}
@@ -207,17 +234,14 @@ const status = d.company_status ?? "Active";
 					d.open_to?.length > 0 && (
 						<div class="block">
 							<h3>Open to</h3>
-							<div class="chips">{d.open_to.map((o: string) => <span class="chip">{o}</span>)}</div>
-						</div>
-					)
-				}
-
-				{
-					(d.contact_email || d.linkedin_url) && (
-						<div class="block">
-							<h3>Contact</h3>
-							{d.contact_email && <a class="addr" href={`mailto:${d.contact_email}`}>{d.contact_email}</a>}
-							{d.linkedin_url && <a href={d.linkedin_url} target="_blank" rel="noopener">LinkedIn ↗</a>}
+							<ul class="icon-list">
+								{d.open_to.map((o: string) => (
+									<li class="icon-line">
+										<Icon name={OPEN_TO_ICONS[o] ?? "handshake"} />
+										<span>{o}</span>
+									</li>
+								))}
+							</ul>
 						</div>
 					)
 				}

@@ -1,0 +1,17 @@
+---
+// Round country flag from Iconify's Circle Flags set (MIT), inlined as SVG so no request leaves the site.
+import { icons } from "@iconify-json/circle-flags";
+import { getIconData, iconToHTML, iconToSVG } from "@iconify/utils";
+import { countryCode } from "../lib/solutions";
+
+interface Props {
+	/** Country name as stored in the markets field, e.g. "Estonia". */
+	country: string;
+}
+
+const code = countryCode(Astro.props.country)?.toLowerCase();
+const data = code ? getIconData(icons, code) : null;
+const svg = data ? iconToSVG(data, { height: "1em" }) : null;
+---
+
+{svg && <Fragment set:html={iconToHTML(svg.body, { ...svg.attributes, class: "flag", "aria-hidden": "true" })} />}

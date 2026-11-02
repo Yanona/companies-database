@@ -1,0 +1,13 @@
+---
+// "← All solutions" link. Visitors who arrived from the browse page go back to it with their filters intact.
+---
+
+<a class="back-link" href="/" data-back-link>← All solutions</a>
+
+<script>
+	const link = document.querySelector<HTMLAnchorElement>("[data-back-link]");
+	if (link && document.referrer) {
+		const from = new URL(document.referrer);
+		if (from.origin === location.origin && from.pathname === "/") link.href = from.pathname + from.search;
+	}
+</script>

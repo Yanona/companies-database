@@ -18,6 +18,8 @@
     "@astrojs/cloudflare": "^14.3.1",
     "@astrojs/react": "^7.0.0",
     "@emdash-cms/cloudflare": "^1.4.0",
+    "@iconify-json/circle-flags": "^1.2.14",
+    "@iconify/utils": "^3.1.7",
     "astro": "^7.3.2",
     "emdash": "^1.4.0",
     "react": "19.2.4",
