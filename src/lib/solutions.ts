@@ -166,6 +166,16 @@ export function itemListJsonLd(origin: string, solutions: Solution[]) {
 	};
 }
 
+/**
+ * Absolute URL of an EmDash image field value. Uploaded images carry no `src`, only a storage key
+ * that the media route serves; images added by URL keep it in `src`.
+ */
+export function mediaUrl(origin: string, image: any): string | undefined {
+	const key = image?.meta?.storageKey;
+	const url = typeof key === "string" ? `/_emdash/api/media/file/${key}` : image?.src || image?.url;
+	return url ? new URL(url, origin).href : undefined;
+}
+
 export function solutionJsonLd(origin: string, s: Solution) {
 	const d = s.data;
 	const pageUrl = `${origin}/solutions/${s.slug}`;
@@ -192,7 +202,7 @@ export function solutionJsonLd(origin: string, s: Solution) {
 		email: d.contact_email || undefined,
 		sameAs: d.linkedin_url ? [d.linkedin_url] : undefined,
 		memberOf: { "@type": "Organization", name: EDTECH_ESTONIA.name, url: EDTECH_ESTONIA.url },
-		logo: d.logo?.src || undefined,
+		logo: mediaUrl(origin, d.logo),
 	};
 
 	const app: Record<string, unknown> = {
@@ -202,8 +212,8 @@ export function solutionJsonLd(origin: string, s: Solution) {
 		description: d.tagline,
 		url: d.website,
 		mainEntityOfPage: pageUrl,
-		image: d.logo?.src || undefined,
-		screenshot: (d.screenshots ?? []).map((r: any) => r.image?.src).filter(Boolean),
+		image: mediaUrl(origin, d.logo),
+		screenshot: (d.screenshots ?? []).map((r: any) => mediaUrl(origin, r.image)).filter(Boolean),
 		applicationCategory: "EducationalApplication",
 		inLanguage: (d.product_languages ?? []).map(languageCode).filter(Boolean),
 		audience: [

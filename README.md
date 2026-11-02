@@ -53,7 +53,7 @@ Live at https://edtech-estonia-directory.yana-playground.workers.dev (Cloudflare
 npm run deploy
 ```
 
-Media storage (R2) is not set up yet, so logo and image uploads do not work. To enable it: create the bucket with `npx wrangler r2 bucket create edtech-estonia-media`, then uncomment `r2_buckets` in `wrangler.jsonc` and `storage` in `astro.config.mjs`, and redeploy.
+Uploaded media (logos, screenshots) is stored in the private R2 bucket `edtech-database-media` and served through the site's own media route. Keep the bucket private: EmDash's automatic backups can be stored in the same bucket.
 
 ### After updating EmDash
 

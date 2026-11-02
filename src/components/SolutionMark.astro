@@ -13,7 +13,7 @@ const { slug, title, logo } = Astro.props;
 ---
 
 {
-	logo?.src ? (
+	logo?.src || logo?.meta?.storageKey ? (
 		<div class="mark img">
 			<Image image={logo} alt={`${title} logo`} />
 		</div>

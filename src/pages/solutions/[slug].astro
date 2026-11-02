@@ -10,6 +10,7 @@ import {
 	formatDate,
 	isAssociate,
 	lastUpdated,
+	mediaUrl,
 	solutionJsonLd,
 	withTerms,
 	type Achievement,
@@ -34,7 +35,7 @@ const seo = getSeoMeta(entry, {
 	path,
 	defaultTitle: `${d.title}: ${s.categories[0]?.label ?? "EdTech"} solution from Estonia`,
 	defaultDescription: d.tagline,
-	defaultOgImage: d.screenshots?.[0]?.image?.src ?? d.logo?.src,
+	defaultOgImage: mediaUrl(origin, d.screenshots?.[0]?.image) ?? mediaUrl(origin, d.logo),
 });
 
 const primary = s.categories[0];
