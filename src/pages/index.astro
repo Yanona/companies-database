@@ -107,7 +107,9 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 	</section>
 
 	<div class="wrap browse">
-		<details class="filters" id="filters" open>
+		<details class="filters" id="filters">
+			{/* Open on wide screens before first paint, so the list below doesn't jump when the page script runs */}
+			<script is:inline>document.getElementById("filters").open = matchMedia("(min-width: 901px)").matches;</script>
 			<summary><span>Filters</span><span id="activeCount" class="num"></span></summary>
 			<div class="filter-body">
 				{
@@ -124,8 +126,8 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 									hidden
 								/>
 							)}
-							{g.options.map((o) => (
-								<label class="opt" for={`f-${g.key}-${o.value}`}>
+							{g.options.map((o, i) => (
+								<label class:list={["opt", { "is-hidden": g.collapseTo !== undefined && i >= g.collapseTo }]} for={`f-${g.key}-${o.value}`}>
 									<input type="checkbox" id={`f-${g.key}-${o.value}`} data-key={g.key} value={o.value} />
 									<span class="l">{o.label}</span>
 									<span class="c">{o.count}</span>
@@ -314,7 +316,6 @@ const description = `Browse ${solutions.length} edtech solutions built by EdTech
 	}
 
 	const wide = matchMedia("(min-width: 901px)");
-	filters.open = wide.matches;
 	wide.addEventListener("change", (e) => (filters.open = e.matches));
 	update();
 </script>
