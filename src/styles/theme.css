@@ -761,9 +761,14 @@ a.chip:hover {
 	background: var(--surface);
 	border: 1px solid var(--line);
 	border-radius: 14px;
-	padding: 22px;
+	padding: 28px;
 	display: grid;
-	gap: 22px;
+	gap: 24px;
+}
+/* Divider between the key facts and each list section */
+.facts > * + * {
+	border-top: 1px solid var(--line);
+	padding-top: 24px;
 }
 .facts h3 {
 	font: 500 11px var(--f-mono);
@@ -774,7 +779,7 @@ a.chip:hover {
 .facts dl {
 	margin: 0;
 	display: grid;
-	gap: 12px;
+	gap: 14px;
 }
 .facts dl div {
 	display: grid;
@@ -791,12 +796,12 @@ a.chip:hover {
 }
 .facts .block {
 	display: grid;
-	gap: 10px;
+	gap: 14px;
 }
 .countries {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 6px;
+	gap: 8px;
 }
 .country {
 	font-size: 13px;
@@ -812,7 +817,7 @@ a.chip:hover {
 	margin: 0;
 	padding: 0;
 	display: grid;
-	gap: 8px;
+	gap: 12px;
 }
 .icon-line {
 	display: flex;
