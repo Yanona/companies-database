@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
+import { countryPicker } from "@edtech/plugin-country-picker";
 
 export default defineConfig({
 	output: "server",
@@ -16,6 +17,8 @@ export default defineConfig({
 		emdash({
 			database: d1({ binding: "DB", session: "auto", coalesce: true }),
 			storage: r2({ binding: "MEDIA" }),
+			// Searchable picker for long option lists in the admin (see plugins/country-picker)
+			plugins: [countryPicker()],
 		}),
 	],
 	devToolbar: { enabled: false },

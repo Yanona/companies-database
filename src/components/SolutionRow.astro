@@ -41,15 +41,5 @@ const filterData = {
 				{s.levels.map((t) => <span class="chip plain">{t.label.replace(/ \(age.*\)/, "")}</span>)}
 			</div>
 		</div>
-		<div class="meta">
-			<span>
-				Used in <strong>{markets.length}</strong> {markets.length === 1 ? "country" : "countries"}
-			</span>
-			{d.founded_year && (
-				<span>
-					Founded <strong>{d.founded_year}</strong>
-				</span>
-			)}
-		</div>
 	</a>
 </li>

@@ -1,0 +1,16 @@
+{
+  "name": "@edtech/plugin-country-picker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Searchable multi-select editor for long option lists (countries, languages) in the EmDash admin",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./admin": "./src/admin.tsx"
+  },
+  "peerDependencies": {
+    "@cloudflare/kumo": "*",
+    "emdash": "*",
+    "react": "^19.0.0"
+  }
+}

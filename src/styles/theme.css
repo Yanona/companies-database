@@ -447,7 +447,7 @@ select {
 }
 .row > a {
 	display: grid;
-	grid-template-columns: 56px minmax(0, 1fr) 150px;
+	grid-template-columns: 56px minmax(0, 1fr);
 	gap: 18px;
 	align-items: start;
 	padding: 20px 8px;
@@ -474,28 +474,9 @@ select {
 .row .chips {
 	margin-top: 12px;
 }
-.row .meta {
-	display: grid;
-	gap: 6px;
-	font-size: 13px;
-	color: var(--muted);
-	text-align: right;
-}
-.row .meta strong {
-	font-family: var(--f-mono);
-	font-weight: 500;
-	color: var(--ink);
-}
 @media (max-width: 640px) {
 	.row > a {
 		grid-template-columns: 44px minmax(0, 1fr);
-	}
-	.row .meta {
-		grid-column: 2;
-		text-align: left;
-		display: flex;
-		gap: 16px;
-		flex-wrap: wrap;
 	}
 }
 @media (prefers-reduced-motion: no-preference) {
